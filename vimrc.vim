@@ -1,53 +1,70 @@
+call plug#begin('~/.vim/plugged')
 
-let data_dir = has('nvim') ? stdpath('data') . '/site' : '~/.vim'
-" Plug Setup
-if empty(glob(data_dir . '/autoload/plug.vim'))
-  silent execute '!curl -fLo '.data_dir.'/autoload/plug.vim --create-dirs  https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
-  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
-endif
-
-set nocompatible
-call plug#begin()
-Plug 'sheerun/vim-polyglot'
-Plug 'https://github.com/preservim/nerdtree', { 'on': 'NERDTreeToggle' }
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
-Plug 'airblade/vim-gitgutter'
-Plug 'ctrlpvim/ctrlp.vim' " fuzzy find files
+" Plugins
+Plug 'preservim/nerdtree'
 Plug 'vim-airline/vim-airline'
-Plug 'dense-analysis/ale'
-Plug 'preservim/nerdcommenter'
-Plug 'Xuyuanp/nerdtree-git-plugin'
+Plug 'vim-airline/vim-airline-themes'
+Plug 'morhetz/gruvbox'
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'sheerun/vim-polyglot' " For better syntax highlighting
+
 call plug#end()
 
-" Auto installs VIM Plug plugins 
-autocmd VimEnter * if len(filter(values(g:plugs), '!isdirectory(v:val.dir)'))
-  \| PlugInstall --sync | source $MYVIMRC
-\| endif
-
-nnoremap <C-Left> :tabprevious<CR>
-nnoremap <C-Right> :tabnext<CR>
-inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm()
-                              \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+" Basic Settings
 set number
-vmap <C-c> "+yi
-vmap <C-x> "+c
-vmap <C-v> c<ESC>"+p
-imap <C-v> <ESC>"+pa
+syntax enable
+set expandtab
+set tabstop=4
+set shiftwidth=4
+set smartindent
+set ruler
+set wrap
+set cursorline
 
-let NERDTreeCustomOpenArgs={'file':{'where': 't'}}
+" Theme
+colorscheme gruvbox
+set background=dark
 
-nmap <F6> :NERDTreeToggle<CR>
+" NERDTree
+map <C-b> :NERDTreeToggle<CR>
 
-let g:coc_global_extensions = [
-  \ 'coc-snippets',
-  \ 'coc-pairs',
-  \ 'coc-tsserver',
-  \ 'coc-eslint',
-  \ 'coc-prettier',
-  \ 'coc-json',
-  \ 'coc-python',
-  \ 'coc-go'
-  \ ]
+" vim-airline settings
+let g:airline_theme='dark' " or any other theme that closely resembles VSCode
+let g:airline#extensions#tabline#enabled = 1 
+let g:airline#extensions#tabline#left_sep = ' ' 
+let g:airline#extensions#tabline#left_alt_sep = '|' 
+
+" CoC Settings
+let g:coc_global_extensions = ['coc-json', 'coc-tsserver', 'coc-python'] " Add other extensions as needed
+
+
+" Use `[g` and `]g` to navigate diagnostics
+nmap <silent> [g <Plug>(coc-diagnostic-prev)
+nmap <silent> ]g <Plug>(coc-diagnostic-next)
+
+" Remap keys for gotos
+nmap <silent> gd <Plug>(coc-definition)
+nmap <silent> gy <Plug>(coc-type-definition)
+nmap <silent> gi <Plug>(coc-implementation)
+nmap <silent> gr <Plug>(coc-references)
+
+" Use K for documentation in hover
+nmap <silent> K  <Plug>(coc-hover)
+
+" Make <TAB> and <S-TAB> work for autocompletions:
+inoremap <silent><expr> <TAB> pumvisible() ? "\<C-n>" : "\<TAB>"
+inoremap <silent><expr> <S-TAB> pumvisible() ? "\<C-p>" : "\<S-TAB>"
+
+" Confirm selection with <Enter>
+inoremap <expr> <CR> pumvisible() ? "\<C-y>" : "\<CR>"
+
+
+" Note: To make it even more similar, consider searching for a vim colorscheme 
+" that closely matches the default VSCode theme.
+
+nnoremap <C-J> <C-W><C-J>
+nnoremap <C-K> <C-W><C-K>
+nnoremap <C-L> <C-W><C-L>
+nnoremap <C-H> <C-W><C-H>
 
 set splitbelow
-set encoding=UTF-8
